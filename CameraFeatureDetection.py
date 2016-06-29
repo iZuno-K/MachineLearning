@@ -30,8 +30,11 @@ if __name__  == "__main__":
     xsize = src_img.shape[1]
 
     while(True):
+
         ret,src_img = cap.read()
+        #Feature Detection Area
         img = src_img[ysize/y_ratio:-ysize/y_ratio, xsize/x_ratio:-xsize/x_ratio]
+
         k = cv2.waitKey(5)
 
 
@@ -70,6 +73,7 @@ if __name__  == "__main__":
 
 
             cv2.putText(img, str(count), (100, 100), font, 2, (0, 255, 0), 1, cv2.CV_AA)
+            #Feature detection Area
             # cv2.rectangle(src_img, (xsize/x_ratio, ysize/y_ratio), (xsize-xsize/x_ratio, ysize-ysize/y_ratio), (0,255,0), 2)
 
         if switch2:
@@ -96,7 +100,7 @@ if __name__  == "__main__":
 
 
             if class_index != -1:
-                cv2.putText(img, str(class_names[class_index]), (100, 100), font, 2, (0, 255, 0), 1, cv2.CV_AA)
+                cv2.putText(src_img, str(class_names[class_index]), (100, 100), font, 2, (0, 255, 0), 1, cv2.CV_AA)
 
         cv2.imshow(wname,src_img)
 
