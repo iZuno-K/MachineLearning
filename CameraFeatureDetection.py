@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import time
 
-threshold = 15
+threshold = 18
 sampling_times = 20
 
 if __name__  == "__main__":
@@ -20,16 +20,21 @@ if __name__  == "__main__":
     learned_data = []
     class_names = []
 
+    orb = cv2.ORB()
+    # create BFMatcher object
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+    #get size of capture image
+    ret,src_img = cap.read()
+    ysize = src_img.shape[0]
+    xsize = src_img.shape[1]
+
     while(True):
         ret,src_img = cap.read()
-        ysize = src_img.shape[0]
-        xsize = src_img.shape[1]
         img = src_img[ysize/y_ratio:-ysize/y_ratio, xsize/x_ratio:-xsize/x_ratio]
         k = cv2.waitKey(5)
 
-        orb = cv2.ORB()
-        # create BFMatcher object
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
         if k == 27: #Esc key
             break
 
@@ -44,13 +49,12 @@ if __name__  == "__main__":
             # carry out per 0.3 sec
             if (now - start) > 0.3:
                 start = now
-                # Initiate SIFT detector
-                # orb = cv2.ORB()
 
                 img1 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
                 if count == 0:
                     sample_des = []
+
                 # find the keypoints and descriptors with SIFT
                 kp, des = orb.detectAndCompute(img1,None)
                 sample_des.append(des)
@@ -66,7 +70,7 @@ if __name__  == "__main__":
 
 
             cv2.putText(img, str(count), (100, 100), font, 2, (0, 255, 0), 1, cv2.CV_AA)
-            cv2.rectangle(src_img, (xsize/x_ratio, ysize/y_ratio), (xsize-xsize/x_ratio, ysize-ysize/y_ratio), (0,255,0), 2)
+            # cv2.rectangle(src_img, (xsize/x_ratio, ysize/y_ratio), (xsize-xsize/x_ratio, ysize-ysize/y_ratio), (0,255,0), 2)
 
         if switch2:
             pre_min_distance = threshold
@@ -76,7 +80,7 @@ if __name__  == "__main__":
 
             kp,des = orb.detectAndCompute(src_gray, None)
 
-            if isinstance(des, type(None)) != True:
+            if isinstance(des, type(None)) == False:
                 tmp_distance = []
                 for i in range(len(learned_data)):
                     for j in learned_data[i]:
